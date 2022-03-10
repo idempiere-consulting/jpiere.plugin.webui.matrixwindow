@@ -1726,29 +1726,30 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			Set<Object>  rowKeys = POs.keySet();
 			for(Object rowKey : rowKeys)
 			{
-				//TreeMap<カラム番号,Data>
-				TreeMap<Integer,Object> vmRow = viewModel.get(POs.get(rowKey).get_Value(m_rowKeyColumn.getColumnName()));
-				TreeMap<Integer,Object> ctRow = conversionTable.get(POs.get(rowKey).get_Value(m_rowKeyColumn.getColumnName()));
-
-
-				/*固定カラムの処理*/
-				//現在の仕様では固定カラムは１カラムに限定されており、その情報はすでにputされているので、コメントアウトしておく。
-//				if(i==0)
-//				{
-//					for(int j = 0; j < fixItem.size(); j++)
-//					{
-//							vmRow.put(j, POs.get(rowKey).get_Value(fixItem.get(j)));
-//							ctRow.put(j, POs.get(rowKey).get_Value(fixItem.get(j)));
-//					}
-//				}
-
-				/*変動カラムの処理*/
-				for(int k = 0; k < m_contentFields.length; k++)
-				{
-					vmRow.put(fixItemFieldIDMap.size()+(i*m_contentFields.length)+k,  POs.get(rowKey).get_Value(m_contentColumns[k].getColumnName()));
-					ctRow.put(fixItemFieldIDMap.size()+(i*m_contentFields.length)+k,  POs.get(rowKey).get_ID());
+				if(rowKey!=null) {
+					//TreeMap<カラム番号,Data>
+					TreeMap<Integer,Object> vmRow = viewModel.get(POs.get(rowKey).get_Value(m_rowKeyColumn.getColumnName()));
+					TreeMap<Integer,Object> ctRow = conversionTable.get(POs.get(rowKey).get_Value(m_rowKeyColumn.getColumnName()));
+	
+	
+					/*固定カラムの処理*/
+					//現在の仕様では固定カラムは１カラムに限定されており、その情報はすでにputされているので、コメントアウトしておく。
+	//				if(i==0)
+	//				{
+	//					for(int j = 0; j < fixItem.size(); j++)
+	//					{
+	//							vmRow.put(j, POs.get(rowKey).get_Value(fixItem.get(j)));
+	//							ctRow.put(j, POs.get(rowKey).get_Value(fixItem.get(j)));
+	//					}
+	//				}
+	
+					/*変動カラムの処理*/
+					for(int k = 0; k < m_contentFields.length; k++)
+					{
+						vmRow.put(fixItemFieldIDMap.size()+(i*m_contentFields.length)+k,  POs.get(rowKey).get_Value(m_contentColumns[k].getColumnName()));
+						ctRow.put(fixItemFieldIDMap.size()+(i*m_contentFields.length)+k,  POs.get(rowKey).get_ID());
+					}
 				}
-
 			}//for(Object rowKey : rowKeys)
 
 			i++;//Column key counter

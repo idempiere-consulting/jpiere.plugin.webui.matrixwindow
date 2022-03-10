@@ -985,8 +985,8 @@ public class JPMatrixGridRowRenderer implements RowRenderer<Map.Entry<Integer,Ob
 						{
 							menuItem = (Menuitem)comp;
 							image = menuItem.getImage();
-							if(image.endsWith("Zoom16.png")||image.endsWith("Refresh16.png")
-									|| image.endsWith("New16.png") || image.endsWith("InfoBPartner16.png"))
+							if(image !=null && (image.endsWith("Zoom16.png")||image.endsWith("Refresh16.png")
+									|| image.endsWith("New16.png") || image.endsWith("InfoBPartner16.png")))
 							{
 								menuItem.setVisible(true);
 							}else{

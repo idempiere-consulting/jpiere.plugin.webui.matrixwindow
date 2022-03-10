@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -1366,7 +1367,12 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				}else if( keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_DATE
 						|| keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_DATETIME
 						|| keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_TIME ){
-					list.add(rs.getTimestamp(1));
+					//iDempiereConsulting __10/03/2022 ---- Format Timestamp
+					//list.add(rs.getTimestamp(1));
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+					String timeST = formatter.format(rs.getTimestamp(1).toLocalDateTime());
+					list.add(timeST);
+					//iDempiereConsulting __10/03/2022 --------END 
 				}else{
 					list.add(rs.getObject(1));
 				}

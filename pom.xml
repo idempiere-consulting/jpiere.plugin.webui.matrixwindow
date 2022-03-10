@@ -4,7 +4,7 @@
   <artifactId>jpiere.plugin.webui.matrixwindow</artifactId>
   <packaging>eclipse-plugin</packaging>
   <name>jpiere.plugin.webui.matrixwindow</name>
-  <version>8.2.0-SNAPSHOT</version>
+  <version>9.0.0-SNAPSHOT</version>
 	<repositories>
 		<!-- add Mars repository to resolve dependencies -->
 		<repository>

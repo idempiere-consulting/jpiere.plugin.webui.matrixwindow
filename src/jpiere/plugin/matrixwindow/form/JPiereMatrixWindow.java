@@ -1367,12 +1367,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				}else if( keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_DATE
 						|| keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_DATETIME
 						|| keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_TIME ){
-					//iDempiereConsulting __10/03/2022 ---- Format Timestamp
-					//list.add(rs.getTimestamp(1));
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-					String timeST = formatter.format(rs.getTimestamp(1).toLocalDateTime());
-					list.add(timeST);
-					//iDempiereConsulting __10/03/2022 --------END 
+					list.add(rs.getTimestamp(1));
 				}else{
 					list.add(rs.getObject(1));
 				}
@@ -1819,7 +1814,12 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				|| keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_TIME ){
 			for(int i = 0 ; i < columnKeys.size(); i++)
 			{
-				Auxheader auxheader = new Auxheader(columnKeys.get(i).toString());
+				//iDempiereConsulting __10/03/2022 ---- Format Timestamp
+				//Auxheader auxheader = new Auxheader(columnKeys.get(i).toString());
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				String timeST = formatter.format(((Timestamp)columnKeys.get(i)).toLocalDateTime());
+				Auxheader auxheader = new Auxheader(timeST);
+				//iDempiereConsulting __10/03/2022 --------END
 				auxhead.appendChild(auxheader);
 				auxheader.setColspan(m_contentFields.length);
 				auxheader.setAlign("center");

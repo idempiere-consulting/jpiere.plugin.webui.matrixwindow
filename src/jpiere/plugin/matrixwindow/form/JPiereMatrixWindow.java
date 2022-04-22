@@ -37,6 +37,7 @@ import org.adempiere.base.Service;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ProcessButtonPopup;
 import org.adempiere.webui.adwindow.ToolbarProcessButton;
 import org.adempiere.webui.apps.AEnv;
@@ -118,6 +119,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
 import org.zkoss.zul.impl.XulElement;
 
+import de.aulerlichtkabel.infodialog.PAT_ToolbarAction;
 import jpiere.plugin.matrixwindow.model.MMatrixField;
 import jpiere.plugin.matrixwindow.model.MMatrixSearch;
 import jpiere.plugin.matrixwindow.model.MMatrixWindow;
@@ -164,6 +166,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	private Button matrixExportButton;
 
 	private Button matrixExportXLS ;
+	
+	//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+	private Button summaryButton_1;
+	private Button summaryButton_2;
+	//iDempiereConsulting __21/04/2022 ----------- END
 
 
 	/**********************************************************************
@@ -274,6 +281,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	/****************************************************
 	 * Window Info
 	 ****************************************************/
+	//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+	private GridWindow gridWindow;
+	private String colName_RecordID = "";
+	private int p_record_ID = 0;
+	//iDempiereConsulting __21/04/2022 ----------- END
 	private GridTab gridTab ;
 	private GridField[] gridFields ;
 
@@ -344,7 +356,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 		//Create Window because of use Window info.
 		GridWindowVO gridWindowVO =AEnv.getMWindowVO(form.getWindowNo(), m_matrixWindow.getAD_Window_ID(), 0);
-		GridWindow gridWindow = new GridWindow(gridWindowVO);
+		//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+		//GridWindow gridWindow = new GridWindow(gridWindowVO);
+		gridWindow = new GridWindow(gridWindowVO);
+		////
 		for(int i = 0; i < gridWindow.getTabCount(); i++)
 		{
 			GridTab gtab =gridWindow.getTab(i);
@@ -542,6 +557,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 					editor.addValueChangeListener(this);
 					searchEditorMap.put(editor.getColumnName(), editor);
+					
+					//iDempiereConsulting __22/04/2022 ---- Set record_id for infoDialog
+					if(i==0 && editor!=null)
+						colName_RecordID = editor.getColumnName();
 
 				}
 
@@ -645,7 +664,30 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 					matrixExportButton.setImage(ThemeManager.getThemeResource("images/Export16.png"));
 				ZKUpdateUtil.setWidth(matrixExportButton, "100%");
 				row.appendCellChild(matrixExportButton);
-
+				
+				//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+				summaryButton_1 = new Button(Msg.getMsg(Env.getCtx(), "Summary")+" n.1");
+				summaryButton_1.setId("SummaryButton_1");
+				summaryButton_1.addActionListener(this);
+				summaryButton_1.setEnabled(false);
+//				if (ThemeManager.isUseFontIconForImage())
+//					summaryButton_1.setIconSclass("z-icon-Export");
+//				else
+//					summaryButton_1.setImage(ThemeManager.getThemeResource("images/Export16.png"));
+				ZKUpdateUtil.setWidth(summaryButton_1, "100%");
+				row.appendCellChild(summaryButton_1);
+				
+				summaryButton_2 = new Button(Msg.getMsg(Env.getCtx(), "Summary")+" n.2");
+				summaryButton_2.setId("summaryButton_2");
+				summaryButton_2.addActionListener(this);
+				summaryButton_2.setEnabled(false);
+//				if (ThemeManager.isUseFontIconForImage())
+//					summaryButton_2.setIconSclass("z-icon-Export");
+//				else
+//					summaryButton_2.setImage(ThemeManager.getThemeResource("images/Export16.png"));
+				ZKUpdateUtil.setWidth(summaryButton_2, "100%");
+				row.appendCellChild(summaryButton_2);
+				//iDempiereConsulting __21/04/2022 ----------END
 
 
 		//Edit Area
@@ -760,6 +802,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		CreateButton.setEnabled(false);
 		ProcessButton.setEnabled(false);
 		matrixExportButton.setEnabled(false);
+		//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+		summaryButton_1.setEnabled(false);
+		summaryButton_2.setEnabled(false);
+		//iDempiereConsulting __21/04/2022 --------END
 
 		quickEntry = null;
 
@@ -877,6 +923,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				CreateButton.setEnabled(false);
 				ProcessButton.setEnabled(false);
 				matrixExportButton.setEnabled(false);
+				//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+				summaryButton_1.setEnabled(false);
+				summaryButton_2.setEnabled(false);
+				//iDempiereConsulting __21/04/2022 --------END
 
 				matrixGrid.setVisible(false);
 
@@ -890,6 +940,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			CreateButton.setEnabled(true);
 			ProcessButton.setEnabled(true);
 			matrixExportButton.setEnabled(true);
+			//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+			summaryButton_1.setEnabled(true);
+			summaryButton_2.setEnabled(true);
+			//iDempiereConsulting __21/04/2022 --------END
 
 
 			quickEntry = null;
@@ -908,6 +962,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				CreateButton.setEnabled(true);
 				ProcessButton.setEnabled(true);
 				matrixExportButton.setEnabled(true);
+				//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+				summaryButton_1.setEnabled(true);
+				summaryButton_2.setEnabled(true);
+				//iDempiereConsulting __21/04/2022 --------END
 
 				matrixGrid.setVisible(false);
 				return;
@@ -919,6 +977,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			CreateButton.setEnabled(true);
 			ProcessButton.setEnabled(true);
 			matrixExportButton.setEnabled(true);
+			//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+			summaryButton_1.setEnabled(true);
+			summaryButton_2.setEnabled(true);
+			//iDempiereConsulting __21/04/2022 --------END
 
 			if(e.getName().equals("onComplete"))
 			{
@@ -1098,6 +1160,35 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			}
 
 		}
+		//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+		else if(e.getTarget().equals(summaryButton_1) || e.getTarget().equals(summaryButton_2)) {
+			int recordSize = viewModel.size();
+
+			if(recordSize == 0)
+			{
+				FDialog.info(form.getWindowNo(), form, "not.found", "",Msg.getElement(Env.getCtx(), "JP_MatrixWindow_ID"));
+			}else{
+				String group = (e.getTarget().equals(summaryButton_1))?"A":"B";
+				ADWindow window = new ADWindow(Env.getCtx(), gridWindow.getAD_Window_ID());
+				PAT_ToolbarAction action = new PAT_ToolbarAction();
+				
+				//essenziale per bypass errore di GridTab
+				GridTab gtab_info = null;
+				for(int i = 0; i < gridWindow.getTabCount(); i++)
+				{
+					gtab_info = gridWindow.getTab(i);
+					if(gtab_info.getTabLevel()==0)
+						break;
+				}
+				action.setGridTab_byMatrix(gtab_info);
+				action.setRecordId_byMatrix(p_record_ID);
+				action.setGroup_byMatrix(group);
+				
+				
+				action.execute(window);
+			}
+		}
+		//iDempiereConsulting __21/04/2022 --------END
 
 	}//onEvent()
 
@@ -1301,7 +1392,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				}else{
 
 					whereClause.append(" AND "+ tableName+"."+ entry.getKey() + " = " + entry.getValue().getValue());
-
+					//iDempiereConsulting __22/04/2022 ---- Set record_id for infoDialog
+					if(entry.getKey().equals(colName_RecordID))
+						p_record_ID = (Integer)entry.getValue().getValue();
+					//iDempiereConsulting __22/04/2022 --------END
 				}
 
 			}else{

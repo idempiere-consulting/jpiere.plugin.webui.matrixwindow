@@ -20,7 +20,10 @@ Require-Bundle: org.adempiere.base;bundle-version="2.1.0",
  wrapped.org.apache.poi.poi;bundle-version="4.1.2"
 Service-Component: OSGI-INF/JPierePluginMatrixWindowFormFactory.xml,OSGI-INF/JPierePluginMatrixWindowModelFactory.xml,
  OSGI-INF/JPierePluginMatrixWindowCalloutFactory.xml
-Import-Package: org.apache.poi.hssf.usermodel,
+Import-Package: de.aulerlichtkabel.infodialog;resolution:=optional,
+ de.aulerlichtkabel.infodialog.component;resolution:=optional,
+ de.aulerlichtkabel.infodialog.model;resolution:=optional,
+ org.apache.poi.hssf.usermodel,
  org.compiere.model,
  org.slf4j;version="1.7.2",
  org.slf4j.helpers;version="1.7.2",

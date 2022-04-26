@@ -4,19 +4,19 @@ Bundle-Name: jpiere.plugin.webui.matrixwindow
 Bundle-SymbolicName: jpiere.plugin.webui.matrixwindow;singleton:=true
 Bundle-Version: 10.0.0.qualifier
 Bundle-Vendor: OSS ERP Solutions
-Require-Bundle: org.adempiere.base;bundle-version="2.1.0",
- org.adempiere.ui;bundle-version="2.1.0",
- org.adempiere.ui.zk;bundle-version="2.1.0",
- org.eclipse.osgi;bundle-version="3.7.2",
- org.adempiere.plugin.utils;bundle-version="2.1.0",
- org.idempiere.zk.extra;bundle-version="1.0.0",
- zk;bundle-version="8.0.1",
- zkbind;bundle-version="8.0.1",
- zkplus;bundle-version="8.0.1",
- zcommon;bundle-version="8.0.1",
- zul;bundle-version="8.0.1",
- zhtml;bundle-version="8.0.1",
- zweb;bundle-version="8.0.1",
+Require-Bundle: org.adempiere.base,
+ org.adempiere.ui,
+ org.adempiere.ui.zk,
+ org.eclipse.osgi,
+ org.adempiere.plugin.utils,
+ org.idempiere.zk.extra,
+ zk,
+ zkbind,
+ zkplus,
+ zcommon,
+ zul,
+ zhtml,
+ zweb,
  wrapped.org.apache.poi.poi;bundle-version="4.1.2"
 Service-Component: OSGI-INF/JPierePluginMatrixWindowFormFactory.xml,OSGI-INF/JPierePluginMatrixWindowModelFactory.xml,
  OSGI-INF/JPierePluginMatrixWindowCalloutFactory.xml

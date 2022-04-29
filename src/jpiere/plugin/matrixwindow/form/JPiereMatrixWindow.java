@@ -170,6 +170,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
 	private Button summaryButton_1;
 	private Button summaryButton_2;
+	private Button summaryButton_3;
+	private Button summaryButton_4;
 	//iDempiereConsulting __21/04/2022 ----------- END
 
 
@@ -667,7 +669,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				
 				//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
 				summaryButton_1 = new Button(Msg.getMsg(Env.getCtx(), "Summary")+" n.1");
-				summaryButton_1.setId("SummaryButton_1");
+				summaryButton_1.setId("summaryButton_1");
 				summaryButton_1.addActionListener(this);
 				summaryButton_1.setEnabled(false);
 //				if (ThemeManager.isUseFontIconForImage())
@@ -687,6 +689,28 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 //					summaryButton_2.setImage(ThemeManager.getThemeResource("images/Export16.png"));
 				ZKUpdateUtil.setWidth(summaryButton_2, "100%");
 				row.appendCellChild(summaryButton_2);
+				
+				summaryButton_3 = new Button(Msg.getMsg(Env.getCtx(), "Summary")+" n.3");
+				summaryButton_3.setId("summaryButton_3");
+				summaryButton_3.addActionListener(this);
+				summaryButton_3.setEnabled(false);
+//				if (ThemeManager.isUseFontIconForImage())
+//					summaryButton_3.setIconSclass("z-icon-Export");
+//				else
+//					summaryButton_3.setImage(ThemeManager.getThemeResource("images/Export16.png"));
+				ZKUpdateUtil.setWidth(summaryButton_3, "100%");
+				row.appendCellChild(summaryButton_3);
+				
+				summaryButton_4 = new Button(Msg.getMsg(Env.getCtx(), "Summary")+" n.4");
+				summaryButton_4.setId("summaryButton_4");
+				summaryButton_4.addActionListener(this);
+				summaryButton_4.setEnabled(false);
+//				if (ThemeManager.isUseFontIconForImage())
+//					summaryButton_4.setIconSclass("z-icon-Export");
+//				else
+//					summaryButton_4.setImage(ThemeManager.getThemeResource("images/Export16.png"));
+				ZKUpdateUtil.setWidth(summaryButton_4, "100%");
+				row.appendCellChild(summaryButton_4);
 				//iDempiereConsulting __21/04/2022 ----------END
 
 
@@ -805,6 +829,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
 		summaryButton_1.setEnabled(false);
 		summaryButton_2.setEnabled(false);
+		summaryButton_3.setEnabled(false);
+		summaryButton_4.setEnabled(false);
 		//iDempiereConsulting __21/04/2022 --------END
 
 		quickEntry = null;
@@ -926,6 +952,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
 				summaryButton_1.setEnabled(false);
 				summaryButton_2.setEnabled(false);
+				summaryButton_3.setEnabled(false);
+				summaryButton_4.setEnabled(false);
 				//iDempiereConsulting __21/04/2022 --------END
 
 				matrixGrid.setVisible(false);
@@ -943,6 +971,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
+			summaryButton_3.setEnabled(true);
+			summaryButton_4.setEnabled(true);
 			//iDempiereConsulting __21/04/2022 --------END
 
 
@@ -965,6 +995,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
 				summaryButton_1.setEnabled(true);
 				summaryButton_2.setEnabled(true);
+				summaryButton_3.setEnabled(true);
+				summaryButton_4.setEnabled(true);
 				//iDempiereConsulting __21/04/2022 --------END
 
 				matrixGrid.setVisible(false);
@@ -980,6 +1012,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
+			summaryButton_3.setEnabled(true);
+			summaryButton_4.setEnabled(true);
 			//iDempiereConsulting __21/04/2022 --------END
 
 			if(e.getName().equals("onComplete"))
@@ -1161,14 +1195,32 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 		}
 		//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
-		else if(e.getTarget().equals(summaryButton_1) || e.getTarget().equals(summaryButton_2)) {
+		else if(e.getTarget().equals(summaryButton_1) || e.getTarget().equals(summaryButton_2) || e.getTarget().equals(summaryButton_3) || e.getTarget().equals(summaryButton_4)) {
 			int recordSize = viewModel.size();
 
 			if(recordSize == 0)
 			{
 				FDialog.info(form.getWindowNo(), form, "not.found", "",Msg.getElement(Env.getCtx(), "JP_MatrixWindow_ID"));
 			}else{
-				String group = (e.getTarget().equals(summaryButton_1))?"A":"B";
+				
+				String group = "";
+				switch (e.getTarget().getId()) {
+				case "summaryButton_1":
+					group = "A";
+					break;
+				case "summaryButton_2":
+					group = "B";
+					break;
+				case "summaryButton_3":
+					group = "C";
+					break;
+				case "summaryButton_4":
+					group = "D";
+					break;
+				default:
+					group = "";
+				}
+				
 				ADWindow window = new ADWindow(Env.getCtx(), gridWindow.getAD_Window_ID());
 				PAT_ToolbarAction action = new PAT_ToolbarAction();
 				

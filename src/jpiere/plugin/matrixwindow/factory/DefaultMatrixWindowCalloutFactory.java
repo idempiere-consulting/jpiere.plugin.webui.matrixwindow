@@ -16,6 +16,7 @@ package jpiere.plugin.matrixwindow.factory;
 import jpiere.plugin.matrixwindow.base.IMatrixWindowCallout;
 import jpiere.plugin.matrixwindow.base.IMatrixWindowCalloutFactory;
 import jpiere.plugin.matrixwindow.callout.MatrixWindowSampleCallout;
+import jpiere.plugin.matrixwindow.callout.MatrixWindow_WorksiteSheetCallout;
 
 /**
  * Dafault Matrix Window Callout Factory
@@ -33,6 +34,10 @@ public class DefaultMatrixWindowCalloutFactory implements IMatrixWindowCalloutFa
 		if(tableName.equals("JP_ReferenceTest") && columnName.equals("C_BPartner_ID"))
 		{
 			return new MatrixWindowSampleCallout();
+		}
+		//iDempiereConsulting __29/04/2022 ---- Callout 'Attività cantiere'
+		else if(tableName.equals("M_InOutLine") && columnName.equals("QtyEntered")) {
+			return new MatrixWindow_WorksiteSheetCallout();
 		}
 
 		return null;

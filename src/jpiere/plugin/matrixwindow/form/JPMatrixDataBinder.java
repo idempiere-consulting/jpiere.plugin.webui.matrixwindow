@@ -168,7 +168,7 @@ public class JPMatrixDataBinder implements ValueChangeListener {
     				IMatrixWindowCallout callout = factory.getCallout(po.get_TableName(), editor.getColumnName());
     				if(callout != null)
     				{
-    					calloutMessage =callout.start(this, x, y, newValue, oldValue);
+    					calloutMessage =callout.start(this, po, x, y, newValue, oldValue);//iDempiereConsulting __29/04/2022 ---- Gestione callout anche tramite PO
     					if(calloutMessage != null && !calloutMessage.equals(""))
     					{
     						getColumnGridFieldMap().get(0).getGridTab().fireDataStatusEEvent("Message",calloutMessage, false);

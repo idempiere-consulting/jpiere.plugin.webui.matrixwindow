@@ -13,6 +13,8 @@
  *****************************************************************************/
 package jpiere.plugin.matrixwindow.base;
 
+import org.compiere.model.PO;
+
 import jpiere.plugin.matrixwindow.form.JPMatrixDataBinder;
 
 /**
@@ -31,13 +33,15 @@ public interface IMatrixWindowCallout
 	 *
 	 *
 	 *  @param dataBinder 				:dataBinder.setValue(x, y, newValue)
+	 *  @param po 		 				:PO model row
 	 *  @param x 		 				:Column number that Callout occurred
 	 *  @param y 		 				:Row number that Callout occurred
 	 *  @param value 	 				:New Value
 	 *  @param oldValue	 				:Old Value
 	 *  @return Error message or ""
 	 */
-	public String start (JPMatrixDataBinder dataBinder, int x, int y , Object newValue, Object oldValue );
+	//iDempiereConsulting __29/04/2022 ---- Gestione callout anche tramite PO
+	public String start (JPMatrixDataBinder dataBinder, PO po, int x, int y , Object newValue, Object oldValue );
 
 
 

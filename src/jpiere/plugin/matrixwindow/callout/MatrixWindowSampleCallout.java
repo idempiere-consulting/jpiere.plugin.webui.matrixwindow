@@ -21,12 +21,13 @@ import jpiere.plugin.matrixwindow.base.IMatrixWindowCallout;
 import jpiere.plugin.matrixwindow.form.JPMatrixDataBinder;
 
 import org.compiere.model.GridField;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 
 public class MatrixWindowSampleCallout implements IMatrixWindowCallout {
 
 	@Override
-	public String start(JPMatrixDataBinder dataBinder, int x, int y , Object newValue, Object oldValue)
+	public String start(JPMatrixDataBinder dataBinder, PO po, int x, int y , Object newValue, Object oldValue)
 	{
 
 		GridField gridField = dataBinder.getColumnGridFieldMap().get(x);

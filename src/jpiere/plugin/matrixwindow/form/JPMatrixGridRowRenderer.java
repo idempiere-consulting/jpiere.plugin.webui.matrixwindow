@@ -45,6 +45,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
+import org.compiere.model.MProduct;
 import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -368,7 +369,17 @@ public class JPMatrixGridRowRenderer implements RowRenderer<Map.Entry<Integer,Ob
 					else if (DisplayType.isNumeric(columnGridFieldMap.get(i).getDisplayType())) {
 						divStyle = CELL_DIV_STYLE_ALIGN_RIGHT;
 					}
-
+					//iDempiereConsulting __06/06/2022 ----- Hard coded per CLIENTE LimeStone
+						MProduct prd = new MProduct(Env.getCtx(), (Integer)treeMap.get(0), null);
+						if(prd!=null && prd.getValue().equals("RICAVI"))
+							divStyle = divStyle + "background-color: #00C78C;";
+						else if(prd!=null && prd.getValue().equals("COSTI"))
+							divStyle = divStyle + "background-color: #DC143C;";
+						else if(prd!=null && prd.getValue().equals("MEZZI"))
+							divStyle = divStyle + "background-color: #FF3E96;";
+						if(prd!=null && prd.getValue().equals("MATERIALI"))
+							divStyle = divStyle + "background-color: #99b1ca;";
+					//iDempiereConsulting __06/06/2022 ---------END 
 					div.setStyle(divStyle);
 					div.setWidth("100%");
 					div.setAttribute("columnName", columnGridFieldMap.get(i).getColumnName());

@@ -47,9 +47,11 @@ import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -171,7 +173,12 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	private Button summaryButton_1;
 	private Button summaryButton_2;
 	private Button summaryButton_3;
-	private Button summaryButton_4;
+	private Label lblFattProgr;
+	private Label lblCostoProgr;
+	private Label lblUtileProgr;
+	private Textbox txtUtileProgr;
+	private Textbox txtCostoProgr;
+	private Textbox txtFattProgr;
 	//iDempiereConsulting __21/04/2022 ----------- END
 
 
@@ -701,16 +708,35 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				ZKUpdateUtil.setWidth(summaryButton_3, "100%");
 				row.appendCellChild(summaryButton_3);
 				
-				summaryButton_4 = new Button(Msg.getMsg(Env.getCtx(), "Summary")+" n.4");
-				summaryButton_4.setId("summaryButton_4");
-				summaryButton_4.addActionListener(this);
-				summaryButton_4.setEnabled(false);
-//				if (ThemeManager.isUseFontIconForImage())
-//					summaryButton_4.setIconSclass("z-icon-Export");
-//				else
-//					summaryButton_4.setImage(ThemeManager.getThemeResource("images/Export16.png"));
-				ZKUpdateUtil.setWidth(summaryButton_4, "100%");
-				row.appendCellChild(summaryButton_4);
+				lblFattProgr = new Label("Fatt.Progr :");
+				lblFattProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				ZKUpdateUtil.setWidth(lblFattProgr, "100%");
+				txtFattProgr = new Textbox("");
+				txtFattProgr.setEnabled(false);
+				txtFattProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				ZKUpdateUtil.setWidth(txtFattProgr, "100%");
+				row.appendCellChild(lblFattProgr);
+				row.appendCellChild(txtFattProgr);
+				
+				lblCostoProgr = new Label("Costo Progr :");
+				lblCostoProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				ZKUpdateUtil.setWidth(lblCostoProgr, "100%");
+				txtCostoProgr = new Textbox("");
+				txtCostoProgr.setEnabled(false);
+				txtCostoProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				ZKUpdateUtil.setWidth(txtCostoProgr, "100%");
+				row.appendCellChild(lblCostoProgr);
+				row.appendCellChild(txtCostoProgr);
+				
+				lblUtileProgr = new Label("Utile Progr :");
+				lblUtileProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				ZKUpdateUtil.setWidth(lblUtileProgr, "100%");
+				txtUtileProgr = new Textbox("");
+				txtUtileProgr.setEnabled(false);
+				txtUtileProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				ZKUpdateUtil.setWidth(txtUtileProgr, "100%");
+				row.appendCellChild(lblUtileProgr);
+				row.appendCellChild(txtUtileProgr);
 				//iDempiereConsulting __21/04/2022 ----------END
 
 
@@ -830,7 +856,9 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		summaryButton_1.setEnabled(false);
 		summaryButton_2.setEnabled(false);
 		summaryButton_3.setEnabled(false);
-		summaryButton_4.setEnabled(false);
+		txtCostoProgr.setValue("");
+		txtFattProgr.setValue("");
+		txtUtileProgr.setValue("");
 		//iDempiereConsulting __21/04/2022 --------END
 
 		quickEntry = null;
@@ -953,7 +981,9 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				summaryButton_1.setEnabled(false);
 				summaryButton_2.setEnabled(false);
 				summaryButton_3.setEnabled(false);
-				summaryButton_4.setEnabled(false);
+				txtCostoProgr.setValue("");
+				txtFattProgr.setValue("");
+				txtUtileProgr.setValue("");
 				//iDempiereConsulting __21/04/2022 --------END
 
 				matrixGrid.setVisible(false);
@@ -972,7 +1002,9 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
 			summaryButton_3.setEnabled(true);
-			summaryButton_4.setEnabled(true);
+			txtCostoProgr.setValue("");
+			txtFattProgr.setValue("");
+			txtUtileProgr.setValue("");
 			//iDempiereConsulting __21/04/2022 --------END
 
 
@@ -996,7 +1028,9 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				summaryButton_1.setEnabled(true);
 				summaryButton_2.setEnabled(true);
 				summaryButton_3.setEnabled(true);
-				summaryButton_4.setEnabled(true);
+				txtCostoProgr.setValue("");
+				txtFattProgr.setValue("");
+				txtUtileProgr.setValue("");
 				//iDempiereConsulting __21/04/2022 --------END
 
 				matrixGrid.setVisible(false);
@@ -1013,7 +1047,19 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
 			summaryButton_3.setEnabled(true);
-			summaryButton_4.setEnabled(true);
+			//iDempiereConsulting __06/06/2022 ----- Query fissa per CLIENTE Limestone
+			String sql = "SELECT "
+					+ "CASE WHEN sum(il.LineNetAmt) IS NULL "
+					+ "	THEN 0"
+					+ "	ELSE sum(il.LineNetAmt) "
+					+ "END AS Amount "
+					+ "FROM M_InOutLine il "
+					+ "LEFT JOIN C_Activity ca ON ca.C_Activity_ID = il.C_Activity_ID "
+					+ " WHERE ca.C_Activity_ID = ? "
+					+ "AND il.LineNetAmt >= 0";
+			txtCostoProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+			txtFattProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+			txtUtileProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
 			//iDempiereConsulting __21/04/2022 --------END
 
 			if(e.getName().equals("onComplete"))
@@ -1195,7 +1241,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 		}
 		//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
-		else if(e.getTarget().equals(summaryButton_1) || e.getTarget().equals(summaryButton_2) || e.getTarget().equals(summaryButton_3) || e.getTarget().equals(summaryButton_4)) {
+		else if(e.getTarget().equals(summaryButton_1) || e.getTarget().equals(summaryButton_2) || e.getTarget().equals(summaryButton_3)) {
 			int recordSize = viewModel.size();
 
 			if(recordSize == 0)
@@ -1213,9 +1259,6 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 					break;
 				case "summaryButton_3":
 					group = "C";
-					break;
-				case "summaryButton_4":
-					group = "D";
 					break;
 				default:
 					group = "";
@@ -1604,12 +1647,14 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	private ArrayList<Object> createRowKeys(String whereClause)
 	{
 		ArrayList<Object> list = new ArrayList<Object>();
-		StringBuilder sql = new StringBuilder("SELECT DISTINCT "  + TABLE_NAME + "." +  m_rowKeyColumn.getColumnName() +" FROM " + TABLE_NAME);
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT "  + TABLE_NAME + "." +  m_rowKeyColumn.getColumnName() +", "+TABLE_NAME+".LIT_M_Product_Category_ID FROM " + TABLE_NAME);
 		if(m_matrixWindow.getJP_JoinClause() != null)
 		{
 			sql.append(" "+m_matrixWindow.getJP_JoinClause());
 		}
-		sql.append(whereClause).append(" ORDER BY " + TABLE_NAME + "." + m_rowKeyColumn.getColumnName());
+		//sql.append(whereClause).append(" ORDER BY " + TABLE_NAME + "." + m_rowKeyColumn.getColumnName());
+		//sql.append(whereClause).append(" GROUP BY " + TABLE_NAME + ".Name");
+		sql.append(whereClause).append(" ORDER BY " + TABLE_NAME + ".LIT_M_Product_Category_ID");
 
 		I_AD_Field keyField = m_matrixWindow.getJP_MatrixRowKey();
 		I_AD_Column keyColumn = keyField.getAD_Column();

@@ -84,11 +84,13 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButton;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.process.ProcessInfo;
@@ -708,7 +710,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				ZKUpdateUtil.setWidth(summaryButton_3, "100%");
 				row.appendCellChild(summaryButton_3);
 				
-				lblFattProgr = new Label("Fatt.Progr :");
+				lblFattProgr = new Label("--");
 				lblFattProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblFattProgr, "100%");
 				txtFattProgr = new Textbox("");
@@ -718,7 +720,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				row.appendCellChild(lblFattProgr);
 				row.appendCellChild(txtFattProgr);
 				
-				lblCostoProgr = new Label("Costo Progr :");
+				lblCostoProgr = new Label("--");
 				lblCostoProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblCostoProgr, "100%");
 				txtCostoProgr = new Textbox("");
@@ -728,7 +730,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				row.appendCellChild(lblCostoProgr);
 				row.appendCellChild(txtCostoProgr);
 				
-				lblUtileProgr = new Label("Utile Progr :");
+				lblUtileProgr = new Label("--");
 				lblUtileProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblUtileProgr, "100%");
 				txtUtileProgr = new Textbox("");
@@ -856,8 +858,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		summaryButton_1.setEnabled(false);
 		summaryButton_2.setEnabled(false);
 		summaryButton_3.setEnabled(false);
+		lblCostoProgr.setText("--");
 		txtCostoProgr.setValue("");
+		lblFattProgr.setText("--");
 		txtFattProgr.setValue("");
+		lblUtileProgr.setText("--");
 		txtUtileProgr.setValue("");
 		//iDempiereConsulting __21/04/2022 --------END
 
@@ -981,8 +986,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				summaryButton_1.setEnabled(false);
 				summaryButton_2.setEnabled(false);
 				summaryButton_3.setEnabled(false);
+				lblCostoProgr.setText("--");
 				txtCostoProgr.setValue("");
+				lblFattProgr.setText("--");
 				txtFattProgr.setValue("");
+				lblUtileProgr.setText("--");
 				txtUtileProgr.setValue("");
 				//iDempiereConsulting __21/04/2022 --------END
 
@@ -1002,8 +1010,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
 			summaryButton_3.setEnabled(true);
+			lblCostoProgr.setText("--");
 			txtCostoProgr.setValue("");
+			lblFattProgr.setText("--");
 			txtFattProgr.setValue("");
+			lblUtileProgr.setText("--");
 			txtUtileProgr.setValue("");
 			//iDempiereConsulting __21/04/2022 --------END
 
@@ -1028,8 +1039,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				summaryButton_1.setEnabled(true);
 				summaryButton_2.setEnabled(true);
 				summaryButton_3.setEnabled(true);
+				lblCostoProgr.setText("--");
 				txtCostoProgr.setValue("");
+				lblFattProgr.setText("--");
 				txtFattProgr.setValue("");
+				lblUtileProgr.setText("--");
 				txtUtileProgr.setValue("");
 				//iDempiereConsulting __21/04/2022 --------END
 
@@ -1048,18 +1062,37 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			summaryButton_2.setEnabled(true);
 			summaryButton_3.setEnabled(true);
 			//iDempiereConsulting __06/06/2022 ----- Query fissa per CLIENTE Limestone
-			String sql = "SELECT "
-					+ "CASE WHEN sum(il.LineNetAmt) IS NULL "
-					+ "	THEN 0"
-					+ "	ELSE sum(il.LineNetAmt) "
-					+ "END AS Amount "
-					+ "FROM M_InOutLine il "
-					+ "LEFT JOIN C_Activity ca ON ca.C_Activity_ID = il.C_Activity_ID "
-					+ " WHERE ca.C_Activity_ID = ? "
-					+ "AND il.LineNetAmt >= 0";
-			txtCostoProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
-			txtFattProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
-			txtUtileProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+			MSysConfig sysSqlMAtrix = null;
+			String sql = null;
+			Query query  = new Query(Env.getCtx(), MSysConfig.Table_Name, "Name=?", null)
+					.setClient_ID()
+					.setOnlyActiveRecords(true);
+			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL1").first();
+			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
+				sql = sysSqlMAtrix.get_ValueAsString("Help");
+				txtFattProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+				lblFattProgr.setText(sysSqlMAtrix.getDescription());
+				sql = null;
+				sysSqlMAtrix = null;
+			}
+			
+			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL2").first();
+			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
+				sql = sysSqlMAtrix.get_ValueAsString("Help");
+				txtCostoProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+				lblCostoProgr.setText(sysSqlMAtrix.getDescription());
+				sql = null;
+				sysSqlMAtrix = null;
+			}
+			
+			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL3").first();
+			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
+				sql = sysSqlMAtrix.get_ValueAsString("Help");
+				txtUtileProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+				lblUtileProgr.setText(sysSqlMAtrix.getDescription());
+				sql = null;
+				sysSqlMAtrix = null;
+			}
 			//iDempiereConsulting __21/04/2022 --------END
 
 			if(e.getName().equals("onComplete"))

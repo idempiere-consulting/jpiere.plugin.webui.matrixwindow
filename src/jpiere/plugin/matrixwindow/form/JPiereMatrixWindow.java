@@ -172,6 +172,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	private Button matrixExportXLS ;
 	
 	//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+	private Button refreshButton;
 	private Button summaryButton_1;
 	private Button summaryButton_2;
 	private Button summaryButton_3;
@@ -612,6 +613,17 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 		//Create Button
 		row = parameterLayoutRows.newRow();
+				refreshButton = new Button(Msg.getMsg(Env.getCtx(), "Refresh"));
+				refreshButton.setId("RefreshButton");
+				refreshButton.addActionListener(this);
+				refreshButton.setEnabled(false);
+				if (ThemeManager.isUseFontIconForImage())
+					refreshButton.setIconSclass("z-icon-Refresh");
+				else
+					refreshButton.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+				ZKUpdateUtil.setWidth(refreshButton, "100%");
+				row.appendCellChild(refreshButton);
+		
 				SearchButton = new Button(Msg.getMsg(Env.getCtx(), "search"));
 				SearchButton.setId("SearchButton");
 				SearchButton.addActionListener(this);
@@ -622,8 +634,6 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 					SearchButton.setImage(ThemeManager.getThemeResource("images/Find16.png"));
 				ZKUpdateUtil.setWidth(SearchButton, "100%");
 				row.appendCellChild(SearchButton);
-
-
 
 				SaveButton = new Button(Msg.getMsg(Env.getCtx(), "save"));
 				SaveButton.setId("SaveButton");
@@ -855,6 +865,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		ProcessButton.setEnabled(false);
 		matrixExportButton.setEnabled(false);
 		//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+		refreshButton.setEnabled(false);
 		summaryButton_1.setEnabled(false);
 		summaryButton_2.setEnabled(false);
 		summaryButton_3.setEnabled(false);
@@ -983,6 +994,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				ProcessButton.setEnabled(false);
 				matrixExportButton.setEnabled(false);
 				//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+				refreshButton.setEnabled(false);
 				summaryButton_1.setEnabled(false);
 				summaryButton_2.setEnabled(false);
 				summaryButton_3.setEnabled(false);
@@ -1007,6 +1019,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			ProcessButton.setEnabled(true);
 			matrixExportButton.setEnabled(true);
 			//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+			refreshButton.setEnabled(true);
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
 			summaryButton_3.setEnabled(true);
@@ -1026,7 +1039,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 			Events.sendEvent(Events.ON_CLICK, CreateButton, null);
 
-		}else if (e.getTarget().equals(SearchButton) || e.getName().equals("onComplete")){//onCompolete from process dialog
+		}else if (e.getTarget().equals(SearchButton)|| e.getTarget().equals(refreshButton) || e.getName().equals("onComplete")){//onCompolete from process dialog
 
 			if(!createView ())
 			{
@@ -1036,6 +1049,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				ProcessButton.setEnabled(true);
 				matrixExportButton.setEnabled(true);
 				//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+				refreshButton.setEnabled(false);
 				summaryButton_1.setEnabled(true);
 				summaryButton_2.setEnabled(true);
 				summaryButton_3.setEnabled(true);
@@ -1058,6 +1072,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			ProcessButton.setEnabled(true);
 			matrixExportButton.setEnabled(true);
 			//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
+			refreshButton.setEnabled(true);
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
 			summaryButton_3.setEnabled(true);

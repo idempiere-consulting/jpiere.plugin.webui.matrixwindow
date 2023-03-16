@@ -731,41 +731,41 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 //				row.appendCellChild(summaryButton_3);
 				
 				lblFattProgr = new Label("--");
-				lblFattProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				lblFattProgr.setStyle("font-weight:bold;font-size:10pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblFattProgr, "100%");
 				txtFattProgr = new Textbox("");
 				txtFattProgr.setEnabled(false);
-				txtFattProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				txtFattProgr.setStyle("font-weight:bold;font-size:12pt;text-align: right");
 				ZKUpdateUtil.setWidth(txtFattProgr, "100%");
 				row.appendCellChild(lblFattProgr);
 				row.appendCellChild(txtFattProgr);
 				
 				lblCostoProgr = new Label("--");
-				lblCostoProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				lblCostoProgr.setStyle("font-weight:bold;font-size:10pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblCostoProgr, "100%");
 				txtCostoProgr = new Textbox("");
 				txtCostoProgr.setEnabled(false);
-				txtCostoProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				txtCostoProgr.setStyle("font-weight:bold;font-size:12pt;text-align: right");
 				ZKUpdateUtil.setWidth(txtCostoProgr, "100%");
 				row.appendCellChild(lblCostoProgr);
 				row.appendCellChild(txtCostoProgr);
 				
 				lblMargine = new Label("--");
-				lblMargine.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				lblMargine.setStyle("font-weight:bold;font-size:10pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblMargine, "100%");
 				txtMargine = new Textbox("");
 				txtMargine.setEnabled(false);
-				txtMargine.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				txtMargine.setStyle("font-weight:bold;font-size:12pt;text-align: right");
 				ZKUpdateUtil.setWidth(txtMargine, "100%");
 				row.appendCellChild(lblMargine);
 				row.appendCellChild(txtMargine);
 				
 				lblUtileProgr = new Label("--");
-				lblUtileProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				lblUtileProgr.setStyle("font-weight:bold;font-size:10pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblUtileProgr, "100%");
 				txtUtileProgr = new Textbox("");
 				txtUtileProgr.setEnabled(false);
-				txtUtileProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				txtUtileProgr.setStyle("font-weight:bold;font-size:12pt;text-align: right");
 				ZKUpdateUtil.setWidth(txtUtileProgr, "100%");
 				row.appendCellChild(lblUtileProgr);
 				row.appendCellChild(txtUtileProgr);
@@ -1157,9 +1157,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 						BigDecimal fatt = new BigDecimal(val1);
 						BigDecimal cost = new BigDecimal(val2);
 						BigDecimal marg = BigDecimal.ZERO;
-						if(fatt.compareTo(BigDecimal.ZERO)>0 && cost.compareTo(BigDecimal.ZERO)>0)
+						if(fatt.compareTo(BigDecimal.ZERO)>0 && cost.compareTo(BigDecimal.ZERO)>0) {
 							marg = fatt.divide(cost, 2, RoundingMode.HALF_UP);
-						txtMargine.setValue(marg.toString());
+							marg = marg.multiply(BigDecimal.valueOf(100));
+						}
+						txtMargine.setValue(marg.toString()+" %");
 					}
 				}
 			}

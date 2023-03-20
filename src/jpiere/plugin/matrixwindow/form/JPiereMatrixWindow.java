@@ -122,6 +122,7 @@ import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.impl.XulElement;
 
 import de.aulerlichtkabel.infodialog.PAT_ToolbarAction;
@@ -179,10 +180,12 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 //	private Button summaryButton_3;// per ora non utilizzato
 	private Label lblFattProgr;
 	private Label lblCostoProgr;
+	private Label lblCostoMedio;
 	private Label lblMargine;
 	private Label lblUtileProgr;
 	private Textbox txtUtileProgr;
 	private Textbox txtCostoProgr;
+	private Textbox txtCostoMedio;
 	private Textbox txtFattProgr;
 	private Textbox txtMargine;
 	//iDempiereConsulting __21/04/2022 ----------- END
@@ -750,6 +753,19 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				row.appendCellChild(lblCostoProgr);
 				row.appendCellChild(txtCostoProgr);
 				
+				lblCostoMedio = new Label("--");
+				lblCostoMedio.setStyle("font-weight:bold;font-size:10pt;text-align: right");
+				ZKUpdateUtil.setWidth(lblCostoProgr, "100%");
+				txtCostoMedio = new Textbox("");
+				txtCostoMedio.setEnabled(false);
+				txtCostoMedio.setStyle("font-weight:bold;font-size:12pt;text-align: right");
+				ZKUpdateUtil.setWidth(txtCostoMedio, "100%");
+				row.appendCellChild(lblCostoMedio);
+				row.appendCellChild(txtCostoMedio);
+				
+			row = parameterLayoutRows.newRow();
+				row.appendCellChild(new Space(), 7);
+				
 				lblMargine = new Label("--");
 				lblMargine.setStyle("font-weight:bold;font-size:10pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblMargine, "100%");
@@ -891,6 +907,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 //		summaryButton_3.setEnabled(false);
 		lblCostoProgr.setText("--");
 		txtCostoProgr.setValue("");
+		lblCostoMedio.setText("--");
+		txtCostoMedio.setText("");
 		lblFattProgr.setText("--");
 		txtFattProgr.setValue("");
 		lblUtileProgr.setText("--");
@@ -1022,6 +1040,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 //				summaryButton_3.setEnabled(false);
 				lblCostoProgr.setText("--");
 				txtCostoProgr.setValue("");
+				lblCostoMedio.setText("--");
+				txtCostoMedio.setText("");
 				lblFattProgr.setText("--");
 				txtFattProgr.setValue("");
 				lblUtileProgr.setText("--");
@@ -1049,6 +1069,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 //			summaryButton_3.setEnabled(true);
 			lblCostoProgr.setText("--");
 			txtCostoProgr.setValue("");
+			lblCostoMedio.setText("--");
+			txtCostoMedio.setText("");
 			lblFattProgr.setText("--");
 			txtFattProgr.setValue("");
 			lblUtileProgr.setText("--");
@@ -1081,6 +1103,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 //				summaryButton_3.setEnabled(true);
 				lblCostoProgr.setText("--");
 				txtCostoProgr.setValue("");
+				lblCostoMedio.setText("--");
+				txtCostoMedio.setText("");
 				lblFattProgr.setText("--");
 				txtFattProgr.setValue("");
 				lblUtileProgr.setText("--");
@@ -1150,20 +1174,38 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL4").first();
 			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
 				lblMargine.setText(sysSqlMAtrix.getDescription());
-				if(txtFattProgr!=null && txtCostoProgr!=null) {
+				if(txtFattProgr!=null && txtUtileProgr!=null) {
 					String val1 = txtFattProgr.getValue();
-					String val2 = txtCostoProgr.getValue();
+					String val2 = txtUtileProgr.getValue();
 					if(val1!=null && !val1.isEmpty() && val2!=null && !val2.isEmpty()) {
 						BigDecimal fatt = new BigDecimal(val1);
-						BigDecimal cost = new BigDecimal(val2);
+						BigDecimal util = new BigDecimal(val2);
 						BigDecimal marg = BigDecimal.ZERO;
-						if(fatt.compareTo(BigDecimal.ZERO)>0 && cost.compareTo(BigDecimal.ZERO)>0) {
-							marg = fatt.divide(cost, 2, RoundingMode.HALF_UP);
-							marg = marg.multiply(BigDecimal.valueOf(100));
+						if(fatt.compareTo(BigDecimal.ZERO)>0 && util.compareTo(BigDecimal.ZERO)>0) {
+							marg = util.divide(fatt, 4, RoundingMode.CEILING);
+							marg = (marg.multiply(BigDecimal.valueOf(100))).setScale(2);
 						}
 						txtMargine.setValue(marg.toString()+" %");
 					}
 				}
+				sql = null;
+				sysSqlMAtrix = null;
+			}
+			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL5").first();
+			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
+				lblCostoMedio.setText(sysSqlMAtrix.getDescription());
+				sql = sysSqlMAtrix.get_ValueAsString("Help");
+				tmpValue = DB.getSQLValueBD(null, sql, p_record_ID);
+				if(tmpValue==null)
+					tmpValue = BigDecimal.ZERO;
+				if(tmpValue.compareTo(BigDecimal.ZERO)>0 && txtCostoProgr!=null) {
+					String val1 = txtCostoProgr.getValue();
+					tmpValue = new BigDecimal(val1).divide(tmpValue, 2, RoundingMode.HALF_UP);
+				}
+				txtCostoMedio.setValue(tmpValue.toString());
+				lblCostoMedio.setText(sysSqlMAtrix.getDescription());
+				sql = null;
+				sysSqlMAtrix = null;
 			}
 			//iDempiereConsulting __21/04/2022 --------END
 

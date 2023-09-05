@@ -81,8 +81,10 @@ import org.compiere.model.I_AD_Column;
 import org.compiere.model.I_AD_Field;
 import org.compiere.model.MColumn;
 import org.compiere.model.MField;
+import org.compiere.model.MInOutLine;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MProcess;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -1435,8 +1437,14 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	}//onEvent()
 
 	private void loadToolbarButtons() {
+		//iDempiereConsulting __05/09/2023 --- [CLIENTE Limestone] se si tratta di gestione cantieri, recupero processi dal parent delle righe MInOutLine
+		int adTabID = gridTab.getAD_Tab_ID();
+		if(gridTab.getAD_Tab_UU().equals("2a286bf7-4c59-4d76-ac54-8c709978731d"))//Window "Anagrafica Cantiere" > Tab "Riga del documento"(Shipment Line)
+			adTabID = gridTab.getParentTab().getAD_Tab_ID();
+		//iDempiereConsulting __05/09/2023 ------- END
+		
 		//get extra toolbar process buttons
-        MToolBarButton[] mToolbarButtons = MToolBarButton.getProcessButtonOfTab(gridTab.getAD_Tab_ID(), null);
+        MToolBarButton[] mToolbarButtons = MToolBarButton.getProcessButtonOfTab(adTabID, null);
         for(MToolBarButton mToolbarButton : mToolbarButtons) {
         	Boolean access = MRole.getDefault().getProcessAccess(mToolbarButton.getAD_Process_ID());
         	if (access != null && access.booleanValue()) {
@@ -1446,7 +1454,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
         }
 
         if (toolbarProcessButtons.size() > 0) {
-        	int ids[] = MToolBarButtonRestrict.getProcessButtonOfTab(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
+        	int ids[] = MToolBarButtonRestrict.getProcessButtonOfTab(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), adTabID, null);
         	if (ids != null && ids.length > 0) {
         		for(int id : ids) {
         			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(Env.getCtx(), id, null);
@@ -2488,8 +2496,19 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		}
 
 		ToolbarProcessButton button = (ToolbarProcessButton)event.getSource();
-
-		JPiereMatrixWindowProcessModelDialog dialog = new JPiereMatrixWindowProcessModelDialog(form.getWindowNo(),button.getProcess_ID(), 0, 0, false, this);
+		//iDempiereConsulting __05/09/2023 --- [CLIENTE Limestone] se si tratta di gestione cantieri, recupero processi dal parent delle righe MInOutLine
+		//JPiereMatrixWindowProcessModelDialog dialog = new JPiereMatrixWindowProcessModelDialog(form.getWindowNo(),button.getProcess_ID(), 0, 0, false, this);
+		JPiereMatrixWindowProcessModelDialog dialog = null;
+		int tableID = 0;
+		int recordID = 0;
+		MProcess process = MProcess.get(Env.getCtx(), button.getProcess_ID());
+		if(process.getAD_Process_UU().equals("36e8cfab-ca32-4f8d-8f1a-76c3d0aac57f")) { //Crea giorni cantiere (CopyMInOutLine)
+			if(m_POs!=null && m_POs.length>0 && m_POs[0].get_TableName().equals("M_InOutLine")) {
+				tableID = MTable.getTable_ID("M_InOut");
+				recordID = ((MInOutLine) m_POs[0]).getParent().get_ID();
+			}
+		}
+		dialog = new JPiereMatrixWindowProcessModelDialog(form.getWindowNo(),button.getProcess_ID(), tableID, recordID, false, this);
 
 		if (dialog.isValid())
 		{

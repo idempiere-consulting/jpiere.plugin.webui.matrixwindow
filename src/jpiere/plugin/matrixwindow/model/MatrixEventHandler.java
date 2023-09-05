@@ -48,8 +48,8 @@ public class MatrixEventHandler extends AbstractEventHandler {
 				  if(addAmt==null) 
 					  return;
 				  sumLineNetAmt = sumLineNetAmt.add(addAmt);
-				  if(sumLineNetAmt.compareTo(BigDecimal.ZERO)<=0) 
-					  return;
+//				  if(sumLineNetAmt.compareTo(BigDecimal.ZERO)<=0) 
+//					  return;
 				 
 				////////
 				

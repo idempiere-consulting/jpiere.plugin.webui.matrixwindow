@@ -2502,7 +2502,8 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		int tableID = 0;
 		int recordID = 0;
 		MProcess process = MProcess.get(Env.getCtx(), button.getProcess_ID());
-		if(process.getAD_Process_UU().equals("36e8cfab-ca32-4f8d-8f1a-76c3d0aac57f")) { //Crea giorni cantiere (CopyMInOutLine)
+		if(process.getAD_Process_UU().equals("36e8cfab-ca32-4f8d-8f1a-76c3d0aac57f") //Crea giorni cantiere (CopyMInOutLine)
+				|| process.getAD_Process_UU().equals("2bba5387-fd41-4c02-85ab-c16c02391b62")) {  // Crea un SOLO giorno cantiere
 			if(m_POs!=null && m_POs.length>0 && m_POs[0].get_TableName().equals("M_InOutLine")) {
 				tableID = MTable.getTable_ID("M_InOut");
 				recordID = ((MInOutLine) m_POs[0]).getParent().get_ID();

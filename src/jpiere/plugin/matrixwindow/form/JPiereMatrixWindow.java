@@ -1143,7 +1143,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				tmpValue = DB.getSQLValueBD(null, sql, p_record_ID);
 				if(tmpValue==null)
 					tmpValue = BigDecimal.ZERO;
-				txtFattProgr.setValue(tmpValue.toString());
+				txtFattProgr.setValue((tmpValue.toString()).replace(".", ","));
 				lblFattProgr.setText(sysSqlMAtrix.getDescription());
 				sql = null;
 				sysSqlMAtrix = null;
@@ -1155,7 +1155,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				tmpValue = DB.getSQLValueBD(null, sql, p_record_ID);
 				if(tmpValue==null)
 					tmpValue = BigDecimal.ZERO;
-				txtCostoProgr.setValue(tmpValue.toString());
+				txtCostoProgr.setValue((tmpValue.toString()).replace(".", ","));
 				lblCostoProgr.setText(sysSqlMAtrix.getDescription());
 				sql = null;
 				sysSqlMAtrix = null;
@@ -1167,7 +1167,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				tmpValue = DB.getSQLValueBD(null, sql, p_record_ID);
 				if(tmpValue==null)
 					tmpValue = BigDecimal.ZERO;
-				txtUtileProgr.setValue(tmpValue.toString());
+				txtUtileProgr.setValue((tmpValue.toString()).replace(".", ","));
 				lblUtileProgr.setText(sysSqlMAtrix.getDescription());
 				sql = null;
 				sysSqlMAtrix = null;
@@ -1178,7 +1178,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				lblMargine.setText(sysSqlMAtrix.getDescription());
 				if(txtFattProgr!=null && txtUtileProgr!=null) {
 					String val1 = txtFattProgr.getValue();
+					if(val1.contains(","))
+						val1 = val1.replace(",", ".");
 					String val2 = txtUtileProgr.getValue();
+					if(val2.contains(","))
+						val2 = val2.replace(",", ".");
 					if(val1!=null && !val1.isEmpty() && val2!=null && !val2.isEmpty()) {
 						BigDecimal fatt = new BigDecimal(val1);
 						BigDecimal util = new BigDecimal(val2);
@@ -1202,9 +1206,11 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 					tmpValue = BigDecimal.ZERO;
 				if(tmpValue.compareTo(BigDecimal.ZERO)>0 && txtCostoProgr!=null) {
 					String val1 = txtCostoProgr.getValue();
+					if(val1.contains(","))
+						val1 = val1.replace(",", ".");
 					tmpValue = new BigDecimal(val1).divide(tmpValue, 2, RoundingMode.HALF_UP);
 				}
-				txtCostoMedio.setValue(tmpValue.toString());
+				txtCostoMedio.setValue((tmpValue.toString()).replace(".", ","));
 				lblCostoMedio.setText(sysSqlMAtrix.getDescription());
 				sql = null;
 				sysSqlMAtrix = null;

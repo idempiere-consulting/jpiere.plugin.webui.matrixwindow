@@ -1187,10 +1187,9 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 						BigDecimal fatt = new BigDecimal(val1);
 						BigDecimal util = new BigDecimal(val2);
 						BigDecimal marg = BigDecimal.ZERO;
-//						if(fatt.compareTo(BigDecimal.ZERO)>0 && util.compareTo(BigDecimal.ZERO)>0) {
+						if(fatt.compareTo(BigDecimal.ZERO)!=0 && util.compareTo(BigDecimal.ZERO)!=0)
 							marg = util.divide(fatt, 4, RoundingMode.CEILING);
-							marg = (marg.multiply(BigDecimal.valueOf(100))).setScale(2);
-//						}
+						marg = (marg.multiply(BigDecimal.valueOf(100))).setScale(2);
 						txtMargine.setValue((marg.toString()).replace(".", ",")+" %");
 					}
 				}

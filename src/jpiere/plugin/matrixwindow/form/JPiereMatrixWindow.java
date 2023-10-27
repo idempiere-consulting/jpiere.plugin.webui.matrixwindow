@@ -1294,7 +1294,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 			if(recordSize == 0)
 			{
-				FDialog.info(form.getWindowNo(), form, "not.found", "",Msg.getElement(Env.getCtx(), "JP_MatrixWindow_ID"));
+				Dialog.info(form.getWindowNo(), "not.found", "",Msg.getElement(Env.getCtx(), "JP_MatrixWindow_ID"));
 			}else{
 				
 				String group = "";

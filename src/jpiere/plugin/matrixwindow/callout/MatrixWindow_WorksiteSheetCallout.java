@@ -118,7 +118,19 @@ public class MatrixWindow_WorksiteSheetCallout implements IMatrixWindowCallout {
 
 				//calcolo il LineNetAmt
 				if (outLine.get_Value("PriceEntered") != null) {
-					BigDecimal LineNetAmt = ((BigDecimal)outLine.get_Value("QtyEntered")).multiply((BigDecimal)outLine.get_Value("PriceEntered"));
+					//iDempiereConsulting __30/10/2023 --- Calcolo di eventuale costo gasolio (CLIENTE: Limestone)
+					//BigDecimal LineNetAmt = ((BigDecimal)outLine.get_Value("QtyEntered")).multiply((BigDecimal)outLine.get_Value("PriceEntered"));
+					BigDecimal LineNetAmt = BigDecimal.ZERO;
+					BigDecimal qtyEntered = (BigDecimal)outLine.get_Value("QtyEntered");
+					BigDecimal priceEntered = (BigDecimal)outLine.get_Value("PriceEntered");
+					if(outLine.columnExists("NewCostPrice") && outLine.get_Value("NewCostPrice")!=null && ((BigDecimal)outLine.get_Value("NewCostPrice")).compareTo(BigDecimal.ZERO)>0) {
+						LineNetAmt = priceEntered.multiply(BigDecimal.ONE);
+						if(qtyEntered.compareTo(BigDecimal.ONE)>0)
+							LineNetAmt = LineNetAmt.add(qtyEntered.multiply((BigDecimal)outLine.get_Value("NewCostPrice")));
+					}
+					else
+						LineNetAmt = qtyEntered.multiply(priceEntered);
+					
 					if (LineNetAmt.scale() > 2)
 						LineNetAmt = LineNetAmt.setScale(2, RoundingMode.HALF_UP);
 					outLine.set_ValueOfColumn("LineNetAmt", LineNetAmt);

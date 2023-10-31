@@ -30,7 +30,8 @@ public class MatrixEventHandler extends AbstractEventHandler {
 	@Override
 	protected void doHandleEvent(Event event) {
 		PO po = getPO(event);
-		if(po.get_TableName().equals("M_InOutLine") && po.columnExists("LIT_M_Product_Category_ID") && po.columnExists("LineNetAmt") && (po.is_ValueChanged("QtyEntered") || bypass)) {
+		if(po.get_TableName().equals("M_InOutLine") && po.columnExists("LIT_M_Product_Category_ID") && po.columnExists("LineNetAmt") && 
+				(po.is_ValueChanged("QtyEntered") || bypass || (!bypass && po.columnExists("NewCostPrice") && po.get_Value("NewCostPrice")!=null && ((BigDecimal)po.get_Value("NewCostPrice")).compareTo(BigDecimal.ZERO)>0))) {
 			if(event.getTopic().equals(IEventTopics.PO_AFTER_NEW) || event.getTopic().equals(IEventTopics.PO_AFTER_CHANGE)){
 
 				int adClientID = po.getAD_Client_ID();
@@ -44,7 +45,7 @@ public class MatrixEventHandler extends AbstractEventHandler {
 				
 				  BigDecimal addAmt = BigDecimal.ZERO;
 				  if(((BigDecimal)po.get_Value("QtyEntered")).compareTo(BigDecimal.ZERO)>0)
-				  addAmt = (BigDecimal)po.get_Value("LineNetAmt"); 
+					  addAmt = (BigDecimal)po.get_Value("LineNetAmt"); 
 				  if(addAmt==null) 
 					  return;
 				  sumLineNetAmt = sumLineNetAmt.add(addAmt);

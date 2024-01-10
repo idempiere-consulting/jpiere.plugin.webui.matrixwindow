@@ -16,6 +16,7 @@ package jpiere.plugin.matrixwindow.form;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -80,8 +81,10 @@ import org.compiere.model.I_AD_Column;
 import org.compiere.model.I_AD_Field;
 import org.compiere.model.MColumn;
 import org.compiere.model.MField;
+import org.compiere.model.MInOutLine;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MProcess;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -121,6 +124,7 @@ import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Space;
 import org.zkoss.zul.impl.XulElement;
 
 import de.aulerlichtkabel.infodialog.PAT_ToolbarAction;
@@ -175,13 +179,17 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	private Button refreshButton;
 	private Button summaryButton_1;
 	private Button summaryButton_2;
-	private Button summaryButton_3;
+//	private Button summaryButton_3;// per ora non utilizzato
 	private Label lblFattProgr;
 	private Label lblCostoProgr;
+	private Label lblCostoMedio;
+	private Label lblMargine;
 	private Label lblUtileProgr;
 	private Textbox txtUtileProgr;
 	private Textbox txtCostoProgr;
+	private Textbox txtCostoMedio;
 	private Textbox txtFattProgr;
+	private Textbox txtMargine;
 	//iDempiereConsulting __21/04/2022 ----------- END
 
 
@@ -488,6 +496,13 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 				}else{
 					String DefaultValue = m_matrixSearches[i].getDefaultValue();
+					//iDempiereConsulting __08/03/2023 ---- Record_id from process 'jpiere.plugin.matrixwindow.process.OpenMatrixWindow'
+					String tmpContextFromProcess = Env.getContext(Env.getCtx(), "#RecordMatrix");
+					if(i==0 && editor!=null && tmpContextFromProcess != null && !tmpContextFromProcess.isEmpty()) {
+						DefaultValue = tmpContextFromProcess;
+					}
+					Env.getCtx().remove("#RecordMatrix");
+					//iDempiereConsulting __08/03/2023 --------END
 					if(DefaultValue == null || DefaultValue.isEmpty())
 					{
 						;
@@ -709,43 +724,66 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				ZKUpdateUtil.setWidth(summaryButton_2, "100%");
 				row.appendCellChild(summaryButton_2);
 				
-				summaryButton_3 = new Button(Msg.getMsg(Env.getCtx(), "Summary")+" n.3");
-				summaryButton_3.setId("summaryButton_3");
-				summaryButton_3.addActionListener(this);
-				summaryButton_3.setEnabled(false);
-//				if (ThemeManager.isUseFontIconForImage())
-//					summaryButton_3.setIconSclass("z-icon-Export");
-//				else
-//					summaryButton_3.setImage(ThemeManager.getThemeResource("images/Export16.png"));
-				ZKUpdateUtil.setWidth(summaryButton_3, "100%");
-				row.appendCellChild(summaryButton_3);
+//				summaryButton_3 = new Button(Msg.getMsg(Env.getCtx(), "Summary")+" n.3");
+//				summaryButton_3.setId("summaryButton_3");
+//				summaryButton_3.addActionListener(this);
+//				summaryButton_3.setEnabled(false);
+////				if (ThemeManager.isUseFontIconForImage())
+////					summaryButton_3.setIconSclass("z-icon-Export");
+////				else
+////					summaryButton_3.setImage(ThemeManager.getThemeResource("images/Export16.png"));
+//				ZKUpdateUtil.setWidth(summaryButton_3, "100%");
+//				row.appendCellChild(summaryButton_3);
 				
 				lblFattProgr = new Label("--");
-				lblFattProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				lblFattProgr.setStyle("font-weight:bold;font-size:10pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblFattProgr, "100%");
 				txtFattProgr = new Textbox("");
 				txtFattProgr.setEnabled(false);
-				txtFattProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				txtFattProgr.setStyle("font-weight:bold;font-size:12pt;text-align: right");
 				ZKUpdateUtil.setWidth(txtFattProgr, "100%");
 				row.appendCellChild(lblFattProgr);
 				row.appendCellChild(txtFattProgr);
 				
 				lblCostoProgr = new Label("--");
-				lblCostoProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				lblCostoProgr.setStyle("font-weight:bold;font-size:10pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblCostoProgr, "100%");
 				txtCostoProgr = new Textbox("");
 				txtCostoProgr.setEnabled(false);
-				txtCostoProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				txtCostoProgr.setStyle("font-weight:bold;font-size:12pt;text-align: right");
 				ZKUpdateUtil.setWidth(txtCostoProgr, "100%");
 				row.appendCellChild(lblCostoProgr);
 				row.appendCellChild(txtCostoProgr);
 				
+				lblCostoMedio = new Label("--");
+				lblCostoMedio.setStyle("font-weight:bold;font-size:10pt;text-align: right");
+				ZKUpdateUtil.setWidth(lblCostoProgr, "100%");
+				txtCostoMedio = new Textbox("");
+				txtCostoMedio.setEnabled(false);
+				txtCostoMedio.setStyle("font-weight:bold;font-size:12pt;text-align: right");
+				ZKUpdateUtil.setWidth(txtCostoMedio, "100%");
+				row.appendCellChild(lblCostoMedio);
+				row.appendCellChild(txtCostoMedio);
+				
+			row = parameterLayoutRows.newRow();
+				row.appendCellChild(new Space(), 7);
+				
+				lblMargine = new Label("--");
+				lblMargine.setStyle("font-weight:bold;font-size:10pt;text-align: right");
+				ZKUpdateUtil.setWidth(lblMargine, "100%");
+				txtMargine = new Textbox("");
+				txtMargine.setEnabled(false);
+				txtMargine.setStyle("font-weight:bold;font-size:12pt;text-align: right");
+				ZKUpdateUtil.setWidth(txtMargine, "100%");
+				row.appendCellChild(lblMargine);
+				row.appendCellChild(txtMargine);
+				
 				lblUtileProgr = new Label("--");
-				lblUtileProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				lblUtileProgr.setStyle("font-weight:bold;font-size:10pt;text-align: right");
 				ZKUpdateUtil.setWidth(lblUtileProgr, "100%");
 				txtUtileProgr = new Textbox("");
 				txtUtileProgr.setEnabled(false);
-				txtUtileProgr.setStyle("font-weight:bold;font-size:14pt;text-align: right");
+				txtUtileProgr.setStyle("font-weight:bold;font-size:12pt;text-align: right");
 				ZKUpdateUtil.setWidth(txtUtileProgr, "100%");
 				row.appendCellChild(lblUtileProgr);
 				row.appendCellChild(txtUtileProgr);
@@ -868,13 +906,17 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		refreshButton.setEnabled(false);
 		summaryButton_1.setEnabled(false);
 		summaryButton_2.setEnabled(false);
-		summaryButton_3.setEnabled(false);
+//		summaryButton_3.setEnabled(false);
 		lblCostoProgr.setText("--");
 		txtCostoProgr.setValue("");
+		lblCostoMedio.setText("--");
+		txtCostoMedio.setText("");
 		lblFattProgr.setText("--");
 		txtFattProgr.setValue("");
 		lblUtileProgr.setText("--");
 		txtUtileProgr.setValue("");
+		lblMargine.setText("--");
+		txtMargine.setValue("");
 		//iDempiereConsulting __21/04/2022 --------END
 
 		quickEntry = null;
@@ -997,13 +1039,17 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				refreshButton.setEnabled(false);
 				summaryButton_1.setEnabled(false);
 				summaryButton_2.setEnabled(false);
-				summaryButton_3.setEnabled(false);
+//				summaryButton_3.setEnabled(false);
 				lblCostoProgr.setText("--");
 				txtCostoProgr.setValue("");
+				lblCostoMedio.setText("--");
+				txtCostoMedio.setText("");
 				lblFattProgr.setText("--");
 				txtFattProgr.setValue("");
 				lblUtileProgr.setText("--");
 				txtUtileProgr.setValue("");
+				lblMargine.setText("--");
+				txtMargine.setValue("");
 				//iDempiereConsulting __21/04/2022 --------END
 
 				matrixGrid.setVisible(false);
@@ -1022,13 +1068,17 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			refreshButton.setEnabled(true);
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
-			summaryButton_3.setEnabled(true);
+//			summaryButton_3.setEnabled(true);
 			lblCostoProgr.setText("--");
 			txtCostoProgr.setValue("");
+			lblCostoMedio.setText("--");
+			txtCostoMedio.setText("");
 			lblFattProgr.setText("--");
 			txtFattProgr.setValue("");
 			lblUtileProgr.setText("--");
 			txtUtileProgr.setValue("");
+			lblMargine.setText("--");
+			txtMargine.setValue("");
 			//iDempiereConsulting __21/04/2022 --------END
 
 
@@ -1052,13 +1102,17 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 				refreshButton.setEnabled(false);
 				summaryButton_1.setEnabled(true);
 				summaryButton_2.setEnabled(true);
-				summaryButton_3.setEnabled(true);
+//				summaryButton_3.setEnabled(true);
 				lblCostoProgr.setText("--");
 				txtCostoProgr.setValue("");
+				lblCostoMedio.setText("--");
+				txtCostoMedio.setText("");
 				lblFattProgr.setText("--");
 				txtFattProgr.setValue("");
 				lblUtileProgr.setText("--");
 				txtUtileProgr.setValue("");
+				lblMargine.setText("--");
+				txtMargine.setValue("");
 				//iDempiereConsulting __21/04/2022 --------END
 
 				matrixGrid.setVisible(false);
@@ -1075,17 +1129,21 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			refreshButton.setEnabled(true);
 			summaryButton_1.setEnabled(true);
 			summaryButton_2.setEnabled(true);
-			summaryButton_3.setEnabled(true);
+//			summaryButton_3.setEnabled(true);
 			//iDempiereConsulting __06/06/2022 ----- Query fissa per CLIENTE Limestone
 			MSysConfig sysSqlMAtrix = null;
 			String sql = null;
 			Query query  = new Query(Env.getCtx(), MSysConfig.Table_Name, "Name=?", null)
 					.setClient_ID()
 					.setOnlyActiveRecords(true);
+			BigDecimal tmpValue = null;
 			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL1").first();
 			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
 				sql = sysSqlMAtrix.get_ValueAsString("Help");
-				txtFattProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+				tmpValue = DB.getSQLValueBD(null, sql, p_record_ID);
+				if(tmpValue==null)
+					tmpValue = BigDecimal.ZERO;
+				txtFattProgr.setValue((tmpValue.toString()).replace(".", ","));
 				lblFattProgr.setText(sysSqlMAtrix.getDescription());
 				sql = null;
 				sysSqlMAtrix = null;
@@ -1094,7 +1152,10 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL2").first();
 			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
 				sql = sysSqlMAtrix.get_ValueAsString("Help");
-				txtCostoProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+				tmpValue = DB.getSQLValueBD(null, sql, p_record_ID);
+				if(tmpValue==null)
+					tmpValue = BigDecimal.ZERO;
+				txtCostoProgr.setValue((tmpValue.toString()).replace(".", ","));
 				lblCostoProgr.setText(sysSqlMAtrix.getDescription());
 				sql = null;
 				sysSqlMAtrix = null;
@@ -1103,8 +1164,53 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL3").first();
 			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
 				sql = sysSqlMAtrix.get_ValueAsString("Help");
-				txtUtileProgr.setValue(DB.getSQLValueBD(null, sql, p_record_ID).toString());
+				tmpValue = DB.getSQLValueBD(null, sql, p_record_ID);
+				if(tmpValue==null)
+					tmpValue = BigDecimal.ZERO;
+				txtUtileProgr.setValue((tmpValue.toString()).replace(".", ","));
 				lblUtileProgr.setText(sysSqlMAtrix.getDescription());
+				sql = null;
+				sysSqlMAtrix = null;
+			}
+			//Calcolo del margine
+			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL4").first();
+			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
+				lblMargine.setText(sysSqlMAtrix.getDescription());
+				if(txtFattProgr!=null && txtUtileProgr!=null) {
+					String val1 = txtFattProgr.getValue();
+					if(val1.contains(","))
+						val1 = val1.replace(",", ".");
+					String val2 = txtUtileProgr.getValue();
+					if(val2.contains(","))
+						val2 = val2.replace(",", ".");
+					if(val1!=null && !val1.isEmpty() && val2!=null && !val2.isEmpty()) {
+						BigDecimal fatt = new BigDecimal(val1);
+						BigDecimal util = new BigDecimal(val2);
+						BigDecimal marg = BigDecimal.ZERO;
+						if(fatt.compareTo(BigDecimal.ZERO)!=0 && util.compareTo(BigDecimal.ZERO)!=0)
+							marg = util.divide(fatt, 4, RoundingMode.CEILING);
+						marg = (marg.multiply(BigDecimal.valueOf(100))).setScale(2);
+						txtMargine.setValue((marg.toString()).replace(".", ",")+" %");
+					}
+				}
+				sql = null;
+				sysSqlMAtrix = null;
+			}
+			sysSqlMAtrix = query.setParameters("LIT_MATRIXSQL5").first();
+			if(sysSqlMAtrix != null && sysSqlMAtrix.getAD_SysConfig_ID()>0) {
+				lblCostoMedio.setText(sysSqlMAtrix.getDescription());
+				sql = sysSqlMAtrix.get_ValueAsString("Help");
+				tmpValue = DB.getSQLValueBD(null, sql, p_record_ID);
+				if(tmpValue==null)
+					tmpValue = BigDecimal.ZERO;
+				if(tmpValue.compareTo(BigDecimal.ZERO)>0 && txtCostoProgr!=null) {
+					String val1 = txtCostoProgr.getValue();
+					if(val1.contains(","))
+						val1 = val1.replace(",", ".");
+					tmpValue = new BigDecimal(val1).divide(tmpValue, 2, RoundingMode.HALF_UP);
+				}
+				txtCostoMedio.setValue((tmpValue.toString()).replace(".", ","));
+				lblCostoMedio.setText(sysSqlMAtrix.getDescription());
 				sql = null;
 				sysSqlMAtrix = null;
 			}
@@ -1289,7 +1395,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 		}
 		//iDempiereConsulting __21/04/2022 ---- Pulsanti di Riepilogo
-		else if(e.getTarget().equals(summaryButton_1) || e.getTarget().equals(summaryButton_2) || e.getTarget().equals(summaryButton_3)) {
+		else if(e.getTarget().equals(summaryButton_1) || e.getTarget().equals(summaryButton_2) /*|| e.getTarget().equals(summaryButton_3)*/) {
 			int recordSize = viewModel.size();
 
 			if(recordSize == 0)
@@ -1336,8 +1442,14 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 	}//onEvent()
 
 	private void loadToolbarButtons() {
+		//iDempiereConsulting __05/09/2023 --- [CLIENTE Limestone] se si tratta di gestione cantieri, recupero processi dal parent delle righe MInOutLine
+		int adTabID = gridTab.getAD_Tab_ID();
+		if(gridTab.getAD_Tab_UU().equals("2a286bf7-4c59-4d76-ac54-8c709978731d"))//Window "Anagrafica Cantiere" > Tab "Riga del documento"(Shipment Line)
+			adTabID = gridTab.getParentTab().getAD_Tab_ID();
+		//iDempiereConsulting __05/09/2023 ------- END
+		
 		//get extra toolbar process buttons
-        MToolBarButton[] mToolbarButtons = MToolBarButton.getProcessButtonOfTab(gridTab.getAD_Tab_ID(), null);
+        MToolBarButton[] mToolbarButtons = MToolBarButton.getProcessButtonOfTab(adTabID, null);
         for(MToolBarButton mToolbarButton : mToolbarButtons) {
         	Boolean access = MRole.getDefault().getProcessAccess(mToolbarButton.getAD_Process_ID());
         	if (access != null && access.booleanValue()) {
@@ -1347,7 +1459,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
         }
 
         if (toolbarProcessButtons.size() > 0) {
-        	int ids[] = MToolBarButtonRestrict.getProcessButtonOfTab(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), gridTab.getAD_Tab_ID(), null);
+        	int ids[] = MToolBarButtonRestrict.getProcessButtonOfTab(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()), adTabID, null);
         	if (ids != null && ids.length > 0) {
         		for(int id : ids) {
         			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(Env.getCtx(), id, null);
@@ -1536,8 +1648,12 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 
 					whereClause.append(" AND "+ tableName+"."+ entry.getKey() + " = " + entry.getValue().getValue());
 					//iDempiereConsulting __22/04/2022 ---- Set record_id for infoDialog
-					if(entry.getKey().equals(colName_RecordID))
-						p_record_ID = (Integer)entry.getValue().getValue();
+					if(entry.getKey().equals(colName_RecordID)) {
+						if(entry.getValue().getValue() instanceof Integer)
+							p_record_ID = (Integer)entry.getValue().getValue();
+						else if(entry.getValue().getValue() instanceof String)
+							p_record_ID = Integer.parseInt((String)entry.getValue().getValue());
+					}
 					//iDempiereConsulting __22/04/2022 --------END
 				}
 
@@ -1591,6 +1707,9 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
+				//iDempiereConsulting __08/03/2023 -----
+				if(rs.getObject(1)==null)
+					continue;
 				if(keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_TABLEDIR
 						|| keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_TABLE
 						|| keyColumn.getAD_Reference_ID()==SystemIDs.REFERENCE_DATATYPE_SEARCH )
@@ -2382,8 +2501,20 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		}
 
 		ToolbarProcessButton button = (ToolbarProcessButton)event.getSource();
-
-		JPiereMatrixWindowProcessModelDialog dialog = new JPiereMatrixWindowProcessModelDialog(form.getWindowNo(),button.getProcess_ID(), 0, 0, false, this);
+		//iDempiereConsulting __05/09/2023 --- [CLIENTE Limestone] se si tratta di gestione cantieri, recupero processi dal parent delle righe MInOutLine
+		//JPiereMatrixWindowProcessModelDialog dialog = new JPiereMatrixWindowProcessModelDialog(form.getWindowNo(),button.getProcess_ID(), 0, 0, false, this);
+		JPiereMatrixWindowProcessModelDialog dialog = null;
+		int tableID = 0;
+		int recordID = 0;
+		MProcess process = MProcess.get(Env.getCtx(), button.getProcess_ID());
+		if(process.getAD_Process_UU().equals("36e8cfab-ca32-4f8d-8f1a-76c3d0aac57f") //Crea giorni cantiere (CopyMInOutLine)
+				|| process.getAD_Process_UU().equals("2bba5387-fd41-4c02-85ab-c16c02391b62")) {  // Crea un SOLO giorno cantiere
+			if(m_POs!=null && m_POs.length>0 && m_POs[0].get_TableName().equals("M_InOutLine")) {
+				tableID = MTable.getTable_ID("M_InOut");
+				recordID = ((MInOutLine) m_POs[0]).getParent().get_ID();
+			}
+		}
+		dialog = new JPiereMatrixWindowProcessModelDialog(form.getWindowNo(),button.getProcess_ID(), tableID, recordID, false, this);
 
 		if (dialog.isValid())
 		{

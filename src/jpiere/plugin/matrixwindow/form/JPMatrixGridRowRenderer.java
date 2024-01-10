@@ -370,20 +370,30 @@ public class JPMatrixGridRowRenderer implements RowRenderer<Map.Entry<Integer,Ob
 						divStyle = CELL_DIV_STYLE_ALIGN_RIGHT;
 					}
 					//iDempiereConsulting __06/06/2022 ----- Hard coded per CLIENTE LimeStone
+						boolean blockEdit = false;
 						MProduct prd = new MProduct(Env.getCtx(), (Integer)treeMap.get(0), null);
-						if(prd!=null && prd.getValue().equals("RICAVI"))
+						if(prd!=null && prd.getValue().equals("RICAVI")) {
+							blockEdit = true;
 							divStyle = divStyle + "background-color: #00C78C;";
-						else if(prd!=null && prd.getValue().equals("COSTI"))
+						}
+						else if(prd!=null && prd.getValue().equals("COSTI")) {
+							blockEdit = true;
 							divStyle = divStyle + "background-color: #DC143C;";
-						else if(prd!=null && prd.getValue().equals("MEZZI"))
+						}
+						else if(prd!=null && prd.getValue().equals("MEZZI")) {
+							blockEdit = true;
 							divStyle = divStyle + "background-color: #FF3E96;";
-						if(prd!=null && prd.getValue().equals("MATERIALI"))
+						}
+						if(prd!=null && prd.getValue().equals("MATERIALI")) {
+							blockEdit = true;
 							divStyle = divStyle + "background-color: #99b1ca;";
+						}
 					//iDempiereConsulting __06/06/2022 ---------END 
 					div.setStyle(divStyle);
 					div.setWidth("100%");
 					div.setAttribute("columnName", columnGridFieldMap.get(i).getColumnName());
-					div.addEventListener(Events.ON_CLICK, rowListener);
+					if(!blockEdit)//iDempiereConsulting __06/06/2022
+						div.addEventListener(Events.ON_CLICK, rowListener);
 //					div.addEventListener(Events.ON_DOUBLE_CLICK, rowListener);
 					row.appendChild(div);
 

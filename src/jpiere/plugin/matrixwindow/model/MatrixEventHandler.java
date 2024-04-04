@@ -54,9 +54,9 @@ public class MatrixEventHandler extends AbstractEventHandler {
 				 
 				////////
 				
-				String sqlUpdate = "UPDATE M_InOutLine SET QtyEntered=? WHERE AD_Client_ID=? AND ShipDate=? "
+				String sqlUpdate = "UPDATE M_InOutLine SET QtyEntered=? WHERE AD_Client_ID=? AND ShipDate=? AND M_InOut_ID=? "
 						+ "AND LIT_M_Product_Category_ID IN (SELECT M_Product_Category_Parent_ID FROM LIT_M_Product_Category WHERE AD_Client_ID=? AND LIT_M_Product_Category_ID=?)";
-				DB.executeUpdate(sqlUpdate, new Object[] {sumLineNetAmt, adClientID, shipDate, adClientID, po.get_ValueAsInt("LIT_M_Product_Category_ID")}, false, null);
+				DB.executeUpdate(sqlUpdate, new Object[] {sumLineNetAmt, adClientID, shipDate, po.get_ValueAsInt("M_InOut_ID"), adClientID, po.get_ValueAsInt("LIT_M_Product_Category_ID")}, false, null);
 				bypass = false;
 				
 			}

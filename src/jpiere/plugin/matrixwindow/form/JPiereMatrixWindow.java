@@ -1328,7 +1328,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		}else if(e.getTarget().equals(ProcessButton)){
 
 			ProcessButtonPopup popup = new ProcessButtonPopup();
-			popup.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "processButtonPopup");
+			popup.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "processButtonPopup");
 
 			List<org.zkoss.zul.Button> buttonList = new ArrayList<org.zkoss.zul.Button>();
 			for(ToolbarProcessButton processButton : toolbarProcessButtons) {
@@ -1354,7 +1354,7 @@ public class JPiereMatrixWindow extends AbstractMatrixWindowForm implements Even
 		}else if (e.getTarget().equals(matrixExportButton)) {
 
 			MatrixWindowButtonPopup popup = new MatrixWindowButtonPopup();
-			popup.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "exportButtonPopup");
+			popup.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "exportButtonPopup");
 
 			List<org.zkoss.zul.Button> buttonList = new ArrayList<org.zkoss.zul.Button>();
 			matrixExportXLS = new Button();
